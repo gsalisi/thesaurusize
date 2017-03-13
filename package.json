@@ -4,7 +4,7 @@
     "node": ">=4"
   },
   "scripts": {
-    "postinstall": "bower install && gulp serve:dist",
+    "postinstall": "bower install && gulp default",
     "start": "node server/index.js"
   },
   "dependencies": {
