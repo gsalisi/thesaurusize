@@ -8,9 +8,13 @@
 
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <!-- Place favicon.ico in the root directory -->
+      
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="/bower_components/materialize/bin/materialize.css" />
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -27,13 +31,24 @@
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     
-    <div>
-      <h2> Thesaurusize. </h2>
-      <textarea class="js-ths-input" rows="5" cols="80" id="TITLE">Love.</textarea>
-      <div>
-        <button class="js-ths-btn"> Tzzaurusize! </button>
+    <div class="container">
+      <h1 class="ths-main-title">Thesaurus-ize.</h1>
+      <div class="input-field">
+        <input class="js-ths-input" type="text" 
+          class="validate" id="ths-input">
+        <label for="ths-input">Write your sentence/phrase here!</label>
       </div>
-      <div class="js-ths-result"></div>
+      <!-- <textarea class="js-ths-input" rows="5" cols="80">Test</textarea> -->
+      <div class="ths-valign-wrapper">
+        <span class="valign">
+          <button class="btn waves-effect waves-light js-ths-btn" type="submit" name="action">Thuzzaa!
+            <i class="material-icons right">send</i>
+          </button>
+        </span>
+      </div>
+      <div class="js-ths-result">
+        
+      </div>
     </div>
     
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -50,6 +65,7 @@
     <!-- bower:js -->
     <script src="/bower_components/jquery/dist/jquery.js"></script>
     <script src="/bower_components/modernizr/modernizr.js"></script>
+    <script src="/bower_components/materialize/bin/materialize.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
     

@@ -29,6 +29,22 @@ const NOT_TO_THESAURIZE_SET = new Set([
   'I', 'YOU', 'HE', 'SHE', 'HER', 'HIM', 'THEM', 'ME', 'US', 'THEY',
   'ALL', 'ANOTHER', 'ANY', 'ANYBODY', 'ANYONE', 'ANYTHING']);
 
+app.get('/synonyms/:word', (req, res) => {
+  const word = req.params.word;
+  const requestOptions = {
+    url: `https://wordsapiv1.p.mashape.com/words/${word}/synonyms`,
+    headers: {
+      'X-Mashape-Key': 'bLSnOP5JqXmshpIPnzCEUuqDHvMcp17TGREjsnir5BVQs9k6vg',
+      'Accept': 'application/json'
+    }
+  };
+  // console.log(word);
+  request(requestOptions).then((b) => {
+    // console.log(b);
+    res.send(JSON.parse(b).synonyms)
+  });
+});
+
 app.get('/convert', (req, res) => {
     if (!req.query.q) {
         res.send(`Needs 'q' query parameter.`);
@@ -53,15 +69,17 @@ app.get('/convert', (req, res) => {
       // console.log('promise');
       return request(requestOptions).then((b) => {
         const wordResults = JSON.parse(b).results;
-        for (var i = 0; i < wordResults.length; i++) {
-          const wordRes = wordResults[i];
-          if (wordRes.partOfSpeech === 'adjective' || 
-            wordRes.partOfSpeech === 'verb' || 
-            wordRes.partOfSpeech === 'adverb') {
-            // console.log(wordRes);
-            const synonyms = wordRes.synonyms;
-            const r = getRandomArbitrary(0, synonyms.length);
-            return synonyms[r] || word;
+        if (wordResults) {
+          for (var i = 0; i < wordResults.length; i++) {
+            const wordRes = wordResults[i];
+            if (wordRes.partOfSpeech === 'adjective' || 
+              wordRes.partOfSpeech === 'verb' || 
+              wordRes.partOfSpeech === 'adverb') {
+              // console.log(wordRes);
+              const synonyms = wordRes.synonyms;
+              const r = getRandomArbitrary(0, synonyms.length);
+              return synonyms[r] || word;
+            }
           }
         }
         return word;
