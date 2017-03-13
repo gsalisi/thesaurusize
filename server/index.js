@@ -1,37 +1,77 @@
 const express = require('express');
-const request = require('request');
-// const MongoClient = require('mongodb').MongoClient;
-// const ObjectId = require('mongodb').ObjectID;
-// const bodyParser = require("body-parser");
+const q = require('q');
+const request = require('request-promise');
 const app = express();
 
-// const MONGO_URL = 'mongodb://localhost:27017/w2g';
-// const RECIPE_COLLECTION = 'recipes';
-// const SAVED_RECIPE_COLLECTION = 'saved_recipes';
-
-const NUTRITION_BASE_URL = 'https://api.edamam.com/api/nutrition-data';
-const NUTRITION_API_APPID = '4a420474';
-const NUTRITION_API_APPKEY = 'eb8cf4c0f40e464b76aac068027a761a'
-
+function getRandomArbitrary(min, max) {
+    const beta = Math.random();
+    const beta_left = (beta < 0.5) ? 2*beta : 2*(1-beta);
+    return Math.floor(beta_left * (max - min) + min);
+}
 
 app.set('port', (process.env.PORT || 3000));
-app.use(express.static(__dirname + '/app'));
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
+app.use(express.static(__dirname + '/dist'));
+
+// B both
+// E eacheach othereithereverybodyeveryoneeverything
+// F few
+// H heherhersherselfhimhimselfhis
+// I Iititsitself
+// M manymeminemoremostmuchmyself
+// N neitherno onenobodynonenothing
+// O oneone anotherotherothersoursourselves
+// S severalshesomesomebodysomeonesomething
+// T thattheirtheirsthemthemselvesthesetheythisthose
+// U us
+// W wewhatwhateverwhichwhicheverwhowhoeverwhomwhomeverwhose
+// Y youyouryoursyourselfyourselves
+const NOT_TO_THESAURIZE_SET = new Set([
+  'I', 'YOU', 'HE', 'SHE', 'HER', 'HIM', 'THEM', 'ME', 'US', 'THEY',
+  'ALL', 'ANOTHER', 'ANY', 'ANYBODY', 'ANYONE', 'ANYTHING']);
 
 app.get('/convert', (req, res) => {
+    if (!req.query.q) {
+        res.send(`Needs 'q' query parameter.`);
+    }
 
-    const requestOptions = {
-      url: 'https://wordsapiv1.p.mashape.com/words/amazing/synonyms',
-      headers: {
-        'X-Mashape-Key': 'bLSnOP5JqXmshpIPnzCEUuqDHvMcp17TGREjsnir5BVQs9k6vg',
-        'Accept': 'application/json'
+    const words = req.query.q.split(' ').map(input => {
+      return input.replace(/[^a-zA-Z]/gi, '');
+    })
+    // console.log(words);
+    const promises = words.map(word => {
+      if (NOT_TO_THESAURIZE_SET.has(word.toUpperCase())) {
+        // console.log(word);
+        return q.when(word);
       }
-  };
-          
-    request.get(requestOptions, (err, r, body) => {
-        res.send(body);
-    });
+      const requestOptions = {
+        url: `https://wordsapiv1.p.mashape.com/words/${word}`,
+        headers: {
+          'X-Mashape-Key': 'bLSnOP5JqXmshpIPnzCEUuqDHvMcp17TGREjsnir5BVQs9k6vg',
+          'Accept': 'application/json'
+        }
+      };
+      // console.log('promise');
+      return request(requestOptions).then((b) => {
+        const wordResults = JSON.parse(b).results;
+        for (var i = 0; i < wordResults.length; i++) {
+          const wordRes = wordResults[i];
+          if (wordRes.partOfSpeech === 'adjective' || 
+            wordRes.partOfSpeech === 'verb' || 
+            wordRes.partOfSpeech === 'adverb') {
+            // console.log(wordRes);
+            const synonyms = wordRes.synonyms;
+            const r = getRandomArbitrary(0, synonyms.length);
+            return synonyms[r] || word;
+          }
+        }
+        return word;
+      })
+    })
+    
+    q.all(promises).then((bodies) => {
+      res.send(bodies.join(' ')+'.');
+    }).catch(err => console.log(err));
+
 
 });
 
