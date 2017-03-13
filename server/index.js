@@ -13,23 +13,24 @@ const NUTRITION_BASE_URL = 'https://api.edamam.com/api/nutrition-data';
 const NUTRITION_API_APPID = '4a420474';
 const NUTRITION_API_APPKEY = 'eb8cf4c0f40e464b76aac068027a761a'
 
+
 app.set('port', (process.env.PORT || 3000));
+app.use(express.static(__dirname + '/app'));
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json());
 
 app.get('/convert', (req, res) => {
-    if (!req.query.key) {
-        res.send(`Needs 'key' query parameter.`);
-    }
+
+    const requestOptions = {
+      url: 'https://wordsapiv1.p.mashape.com/words/amazing/synonyms',
+      headers: {
+        'X-Mashape-Key': 'bLSnOP5JqXmshpIPnzCEUuqDHvMcp17TGREjsnir5BVQs9k6vg',
+        'Accept': 'application/json'
+      }
+  };
           
-    request.get({
-        url: NUTRITION_BASE_URL,
-        qs,
-        useQuerystring: true
-    }, (err, r, body) => {
-        if (!err) {
-            res.send(parseToW2GNutrients(JSON.parse(body).totalNutrients));
-        }
+    request.get(requestOptions, (err, r, body) => {
+        res.send(body);
     });
 
 });
