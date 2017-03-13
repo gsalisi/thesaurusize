@@ -1,11 +1,14 @@
 {
-  "private": true,
+  "name": "thesaurusize",
+  "version": "1.0.0",
+  "description": "Fancy some fancy words",
+  "main": "index.js",
   "engines": {
     "node": ">=4"
   },
   "scripts": {
     "postinstall": "bower install && gulp default",
-    "start": "node server/index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "bower": "^1.5.2",
