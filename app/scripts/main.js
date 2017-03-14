@@ -86,11 +86,15 @@ $(document).ready(function() {
     }
 
     function launchRequests(words, i) {
+        $result.append(`<div class="js-ths-preloader-${i} progress">
+            <div class="indeterminate"></div>
+        </div>`);
         $.get(`/synonyms/${words[i]}`).then((data) => {
             i += 1;
             if (i < words.length) {
                 launchRequests(words, i);
             }
+            $(`.js-ths-preloader-${i-1}`).remove();
             generateWordCard(words[i-1], data);
         });
     }
