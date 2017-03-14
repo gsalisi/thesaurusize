@@ -2,6 +2,7 @@ const express = require('express');
 const q = require('q');
 const request = require('request-promise');
 const app = express();
+var counter = 20000;
 
 function getRandomArbitrary(min, max) {
     const beta = Math.random();
@@ -30,6 +31,10 @@ const NOT_TO_THESAURIZE_SET = new Set([
   'ALL', 'ANOTHER', 'ANY', 'ANYBODY', 'ANYONE', 'ANYTHING']);
 
 app.get('/synonyms/:word', (req, res) => {
+  if(counter < 0) {
+    res.send([]);
+  }
+  counter--;
   const word = req.params.word;
   const requestOptions = {
     url: `https://wordsapiv1.p.mashape.com/words/${word}/synonyms`,
@@ -42,6 +47,8 @@ app.get('/synonyms/:word', (req, res) => {
   request(requestOptions).then((b) => {
     // console.log(b);
     res.send(JSON.parse(b).synonyms)
+  }).catch((err) => {
+    res.status(500).send(err);
   });
 });
 

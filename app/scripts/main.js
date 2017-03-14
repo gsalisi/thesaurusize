@@ -47,8 +47,6 @@ $(document).ready(function() {
             if (word[0] === word[0].toUpperCase()
                 && word[0] !== word[0].toLowerCase()) {
                 r = r.charAt(0).toUpperCase() + r.slice(1);;
-            } else if (i === results.length-1) {
-                r += '.';
             }
             return `
                 <div class="collection-item ths-wordcard-synonym js-ths-wordcard-synonym">
@@ -96,6 +94,13 @@ $(document).ready(function() {
             }
             $(`.js-ths-preloader-${i-1}`).remove();
             generateWordCard(words[i-1], data);
+        }).fail((err) => {
+            i += 1;
+            if (i < words.length) {
+                launchRequests(words, i);
+            }
+            $(`.js-ths-preloader-${i-1}`).remove();
+            generateWordCard(words[i-1], []);
         });
     }
 
